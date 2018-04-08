@@ -24,4 +24,32 @@ public class GroupJoinRequest {
 
     @UpdateTimestamp
     private Instant lastUpdate;
+
+    /**
+     * Gets the unique ID of this join request
+     * @return The unique ID of the join request
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * Get the {@link Group} that the sender wants to join
+     * @return The group that the sender wants to join
+     */
+    public Group getGroup() {
+        return group;
+    }
+
+    public Member getSender() {
+        return sender;
+    }
+
+    /**
+     * Gets the last time the persisted version of this join request was modified
+     * @return The last time the persisted version of this join request was modified
+     */
+    public Instant getLastUpdate() {
+        return lastUpdate;
+    }
 }
