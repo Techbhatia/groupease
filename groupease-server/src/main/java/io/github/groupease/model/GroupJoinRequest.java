@@ -10,6 +10,7 @@ import java.time.Instant;
 @Table(name = "GroupJoinRequest")
 public class GroupJoinRequest {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
@@ -18,7 +19,7 @@ public class GroupJoinRequest {
 
     @ManyToOne
     @JoinColumn(name = "SenderID", referencedColumnName = "ID")
-    private Member sender;
+    private GroupeaseUser sender;
 
     private String comments;
 
@@ -41,9 +42,17 @@ public class GroupJoinRequest {
         return group;
     }
 
-    public Member getSender() {
-        return sender;
-    }
+    /**
+     * Gets the {@link GroupeaseUser} that sent this join request
+     * @return The user that sent the join request
+     */
+    public GroupeaseUser getSender() { return sender; }
+
+    /**
+     * Gets the free text comments the sender submitted with the request
+     * @return The free text comments
+     */
+    public String getComments() { return comments; }
 
     /**
      * Gets the last time the persisted version of this join request was modified
