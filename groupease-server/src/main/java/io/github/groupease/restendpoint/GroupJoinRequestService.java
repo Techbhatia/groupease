@@ -8,6 +8,7 @@ import io.github.groupease.db.GroupJoinRequestDao;
 import io.github.groupease.db.GroupeaseUserDao;
 import io.github.groupease.exception.GroupJoinRequestNotFoundException;
 import io.github.groupease.exception.GroupNotFoundException;
+import io.github.groupease.exception.NotGroupMemberException;
 import io.github.groupease.exception.NotSenderException;
 import io.github.groupease.model.Group;
 import io.github.groupease.model.GroupJoinRequest;
@@ -109,6 +110,12 @@ public class GroupJoinRequestService {
         throw new NotSenderException("Only the sender or a group member can view this group join request");
     }
 
+    /**
+     * Accepts a {@link GroupJoinRequest} and adds the sender as a new member of the group. The request is deleted
+     * @param channelId The unique ID of the channel that the specified group is in
+     * @param groupId The unique ID of the group the request was sent to
+     * @param requestId The unique ID of the request to accept
+     */
     @POST
     @Path("{requestId}/acceptance")
     @Timed
@@ -117,8 +124,42 @@ public class GroupJoinRequestService {
                        @PathParam("requestId") long requestId)
     {
         LOGGER.debug("GroupJoinRequestService.accept(channel={}, group={}, request={})", channelId, groupId, requestId);
+
+        // Validate group and channel parameters
+        Group group = groupDao.get(groupId);
+        if(group == null || group.getChannelId() != channelId)
+        {
+            throw new GroupNotFoundException("No group with that ID in that channel was found");
+        }
+
+        // Only a group member can accept a request
+        if(!isGroupMember(group))
+        {
+            throw new NotGroupMemberException("Only a group member can accept a group join request");
+        }
+
+        // Find the invitation
+        GroupJoinRequest request = requestDao.get(channelId, groupId, requestId);
+        if(request == null)
+        {
+            throw new GroupJoinRequestNotFoundException(
+                    "No group join request could be found with that ID for that group in that channel");
+        }
+
+        // Add the sender to the group
+        group.getMembers().add(request.getSender().getMemberList()
+                .stream().filter(member -> member.getChannel().getId() == channelId).findFirst().get());
+
+        // Cleanup the invitation
+        requestDao.delete(request);
     }
 
+    /**
+     * Rejects a {@link GroupJoinRequest}. The sender will not be added to the group. The request is deleted
+     * @param channelId The unique ID of the channel that the specified group is in
+     * @param groupId The unique ID of the group the request was sent to
+     * @param requestId The unique ID of the request to accept
+     */
     @POST
     @Path("{requestId}/rejection")
     @Timed
@@ -127,6 +168,30 @@ public class GroupJoinRequestService {
                        @PathParam("requestId") long requestId)
     {
         LOGGER.debug("GroupJoinRequestService.reject(channel={}, group={}, request={})", channelId, groupId, requestId);
+
+        // Validate group and channel parameters
+        Group group = groupDao.get(groupId);
+        if(group == null || group.getChannelId() != channelId)
+        {
+            throw new GroupNotFoundException("No group with that ID in that channel was found");
+        }
+
+        // Only a group member can reject a request
+        if(!isGroupMember(group))
+        {
+            throw new NotGroupMemberException("Only a group member can reject a group join request");
+        }
+
+        // Find the invitation
+        GroupJoinRequest request = requestDao.get(channelId, groupId, requestId);
+        if(request == null)
+        {
+            throw new GroupJoinRequestNotFoundException(
+                    "No group join request could be found with that ID for that group in that channel");
+        }
+
+        // Remove the invitation
+        requestDao.delete(request);
     }
 
     @POST
