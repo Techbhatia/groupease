@@ -4,6 +4,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -58,10 +59,10 @@ public class ChannelWebService {
     public List<Channel> list(
             @QueryParam("userId") Long userId
     ) {
-        LOGGER.debug("ChannelWebService.list() called with userId: '{}'.", userId);
+        LOGGER.debug("ChannelWebService.list() called with memberId: '{}'.", userId);
         if (userId != null) {
             return channelService.list(userId);
-        } else
+        } else 
             return channelService.list();
     }
 

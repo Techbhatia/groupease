@@ -6,13 +6,12 @@ import io.github.groupease.auth.CurrentUserId;
 import io.github.groupease.db.GroupDao;
 import io.github.groupease.db.GroupJoinRequestDao;
 import io.github.groupease.db.GroupeaseUserDao;
-import io.github.groupease.exception.GroupJoinRequestNotFoundException;
-import io.github.groupease.exception.GroupNotFoundException;
-import io.github.groupease.exception.NotGroupMemberException;
-import io.github.groupease.exception.NotSenderException;
+import io.github.groupease.exception.*;
 import io.github.groupease.model.Group;
 import io.github.groupease.model.GroupJoinRequest;
 import io.github.groupease.model.GroupeaseUser;
+import io.github.groupease.user.UserNotFoundException;
+import io.github.groupease.util.CommentWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -197,11 +196,38 @@ public class GroupJoinRequestService {
     @POST
     @Timed
     @Transactional
-    public GroupJoinRequest create(@PathParam("channelId") long channelId, @PathParam("groupId") long groupId)
+    public GroupJoinRequest create(@PathParam("channelId") long channelId, @PathParam("groupId") long groupId,@Nonnull CommentWrapper wrapper)
     {
-        LOGGER.debug("GroupJoinRequestService.create()");
+        LOGGER.debug("GroupJoinRequestService.create(channel={}, group={})", channelId, groupId);
+        GroupeaseUser profile = userDao.getByProviderId(currentUserIdProvider.get());
+        if(profile == null)
+        {
+            throw new UserNotFoundException();
+        }
 
-        return null;
+
+        Group group = groupDao.get(groupId);
+        if(group == null || group.getChannelId() != channelId)
+        {
+            throw new GroupNotFoundException("No group with that ID in that channel was found");
+        }
+
+        // Check if an existing group join request for this user and group already exists
+
+        List<GroupJoinRequest> existing = requestDao.list(groupId, profile.getId());
+        if(existing!=null){
+            return existing.get(0);
+
+        }
+
+
+        // Check if the user is already a member of the group
+       if(group.getMembers().stream().noneMatch(member -> member.getGroupeaseUser().equals(loggedInUser)))
+       {
+            throw new AlreadyMemberException("User cannot request to join group the user is already a member of");
+       }
+
+        return requestDao.create(profile, group,  wrapper.comments);
     }
 
     /**

@@ -71,7 +71,7 @@ public class JpaChannelDao implements ChannelDao {
         LOGGER.debug("JpaChannelDao.list({}) called.", userId);
 
         TypedQuery<ChannelDto> query = entityManager.createQuery(
-                "SELECT dto FROM ChannelDto dto, Member mem WHERE dto.id = mem.channel.id AND mem.userProfile.id = :provideUserId ORDER BY dto.name ASC",
+                "SELECT dto FROM ChannelDto dto, Member mem WHERE dto.id = mem.channelId AND mem.userId = :provideUserId ORDER BY dto.name ASC",
                 ChannelDto.class
         );
 

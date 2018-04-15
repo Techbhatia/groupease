@@ -1,11 +1,10 @@
 package io.github.groupease.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.time.Instant;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "GroupJoinRequest")
 public class GroupJoinRequest {
@@ -21,10 +20,29 @@ public class GroupJoinRequest {
     @JoinColumn(name = "SenderID", referencedColumnName = "ID")
     private GroupeaseUser sender;
 
+
     private String comments;
 
     @UpdateTimestamp
     private Instant lastUpdate;
+
+
+    public GroupJoinRequest() {}
+
+    public GroupJoinRequest(GroupeaseUser sender, Group group, String comments)
+    {
+        this.sender = sender;
+        this.group = group;
+        this.comments=comments;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        return EqualsBuilder.reflectionEquals(this, obj);
+    }
+
+
 
     /**
      * Gets the unique ID of this join request

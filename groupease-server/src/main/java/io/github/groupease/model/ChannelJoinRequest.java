@@ -1,11 +1,9 @@
 package io.github.groupease.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.time.Instant;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name="ChannelJoinRequest")
 public class ChannelJoinRequest {
@@ -71,6 +69,7 @@ public class ChannelJoinRequest {
      *
      * @return The channel requesting access to
      */
+    @JsonIgnore
     public Channel getChannel() {
         return channel;
     }

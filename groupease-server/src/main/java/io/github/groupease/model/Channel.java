@@ -1,7 +1,6 @@
 package io.github.groupease.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -9,7 +8,6 @@ import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name="Channel")
 public class Channel

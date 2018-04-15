@@ -2,12 +2,11 @@ package io.github.groupease.db;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 
 import static java.util.Objects.requireNonNull;
 
-import com.codahale.metrics.annotation.Timed;
 import com.google.inject.persist.Transactional;
 import io.github.groupease.model.*;
 import org.slf4j.Logger;
@@ -37,7 +36,6 @@ public class MemberDao {
      * @param channel The channel the user is joining
      * @return The newly created member object
      */
-    @Timed
     @Transactional
     public Member create(@Nonnull GroupeaseUser userProfile, @Nonnull Channel channel)
     {
@@ -53,33 +51,9 @@ public class MemberDao {
     }
 
     /**
-     * Creates a new {@link Member} in a channel
-     * @param userId The unique ID of the user in the database being added to the channel
-     * @param channelId The unique ID of the channel in the database
-     * @param isOwner Flag indicating whether the user should be an owner of the channel
-     * @return The newly created member object
-     */
-    @Timed
-    @Transactional
-    public Member create(long userId, long channelId, boolean isOwner)
-    {
-        LOGGER.debug("MemberDao.create(userId={}, channelId={}, isOwner={}) called", userId, channelId, isOwner);
-
-        Query insertQuery = entityManager.createNativeQuery(
-                "INSERT INTO Member (ChannelID, UserID, IsOwner, LastUpdate) VALUES (:channelId, :userId, :isOwner, CURRENT_TIMESTAMP)");
-        insertQuery.setParameter("channelId", channelId);
-        insertQuery.setParameter("userId", userId);
-        insertQuery.setParameter("isOwner", isOwner);
-        insertQuery.executeUpdate();
-
-        return getById(userId, channelId);
-    }
-
-    /**
      * Deletes a {@link Member} from the database which prevents a user from using the associated channel further
      * @param member The previously retrieved member object. Do not supply a manually constructed member
      */
-    @Timed
     @Transactional
     public void delete(@Nonnull Member member)
     {
@@ -94,7 +68,6 @@ public class MemberDao {
      * @param channelId The ID of the channel
      * @return The matching member or null if none could be found
      */
-    @Timed
     public Member getById(long userId, long channelId)
     {
         LOGGER.debug("MemberDao.getById(member={}, channel={})", userId, channelId);
@@ -111,5 +84,4 @@ public class MemberDao {
         }
         return result.get(0);
     }
-
 }

@@ -117,17 +117,4 @@ public class GroupDao {
 
         return newGroup;
     }
-
-    /**
-     * Merges changes to the group back into the database. Really only needed when changing the membership. Do not
-     * use to save a new group. Use the create method instead.
-     * @param group The {@link Group} to merge
-     */
-    @Transactional
-    public void merge(@Nonnull Group group)
-    {
-        LOGGER.debug("GroupDao.merge");
-
-        entityManager.merge(group);
-    }
 }

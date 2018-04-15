@@ -1,7 +1,6 @@
 package io.github.groupease.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
@@ -11,7 +10,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.persistence.*;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name="Member")
 public class Member implements Serializable
@@ -91,9 +89,4 @@ public class Member implements Serializable
     {
         this.channel = channel;
     }
-
-    public void setOwner(boolean owner) {
-        isOwner = owner;
-    }
-
 }

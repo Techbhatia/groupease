@@ -3,7 +3,7 @@ package io.github.groupease.db;
 import com.google.inject.persist.Transactional;
 import io.github.groupease.model.Group;
 import io.github.groupease.model.GroupInvitation;
-import io.github.groupease.model.Member;
+import io.github.groupease.model.GroupeaseUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +44,7 @@ public class GroupInvitationDao
         LOGGER.debug("GroupInvitationDao.list(user={}, channel={})", userId, channelId);
 
         TypedQuery<GroupInvitation> query = entityManager.createQuery(
-                "SELECT gi FROM GroupInvitation gi WHERE gi.group.channelId = :channelId AND gi.recipient.userProfile.id = :userId ORDER BY lastUpdate DESC",
+                "SELECT gi FROM GroupInvitation gi WHERE gi.group.channelId = :channelId AND gi.recipient.id = :userId ORDER BY lastUpdate DESC",
                 GroupInvitation.class);
         query.setParameter("channelId", channelId);
         query.setParameter("userId", userId);
@@ -87,7 +87,7 @@ public class GroupInvitationDao
         LOGGER.debug("GroupInvitationDao.get(invitation={}, user={}, channel={})", invitationId, userId, channelId);
 
         TypedQuery<GroupInvitation> query = entityManager.createQuery(
-                "SELECT gi FROM GroupInvitation gi WHERE gi.id = :invitationId AND gi.recipient.userProfile.id = :userId AND gi.group.channelId = :channelId",
+                "SELECT gi FROM GroupInvitation gi WHERE gi.id = :invitationId AND gi.recipient.id = :userId AND gi.group.channelId = :channelId",
                 GroupInvitation.class);
         query.setParameter("invitationId", invitationId);
         query.setParameter("userId", userId);
@@ -113,7 +113,7 @@ public class GroupInvitationDao
         LOGGER.debug("GroupInvitationDao.get(user={}, group={})", userId, groupId);
 
         TypedQuery<GroupInvitation> query = entityManager.createQuery(
-                "SELECT gi FROM GroupInvitation gi WHERE gi.recipient.userProfile.id = :userId AND gi.group.id = :groupId",
+                "SELECT gi FROM GroupInvitation gi WHERE gi.recipient.id = :userId AND gi.group.id = :groupId",
                 GroupInvitation.class);
         query.setParameter("userId", userId);
         query.setParameter("groupId", groupId);
@@ -129,14 +129,13 @@ public class GroupInvitationDao
 
     /**
      * Creates (sends) a new {@link GroupInvitation} and persists it in the database
-     * @param sender The channel {@link Member} of the user that is sending the invitation
-     * @param recipient The channel {@link Member} of the user that will recieve the invitation
+     * @param sender The {@link GroupeaseUser} that is sending the invitation
+     * @param recipient The {@link GroupeaseUser} that will recieve the invitation
      * @param group The {@link Group} that the recipient is being invited to
      * @return The newly created invitation
      */
     @Transactional
-    @Nonnull
-    public GroupInvitation create(@Nonnull Member sender, @Nonnull Member recipient, @Nonnull Group group)
+    public GroupInvitation create(GroupeaseUser sender, GroupeaseUser recipient, Group group)
     {
         LOGGER.debug("GroupInvitationDao.create(sender={}, recipient={}, group={}",
                 sender.getId(), recipient.getId(), group.getId());

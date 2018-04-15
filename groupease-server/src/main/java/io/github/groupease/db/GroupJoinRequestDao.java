@@ -4,13 +4,16 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import io.github.groupease.model.Group;
 import io.github.groupease.model.GroupJoinRequest;
+import io.github.groupease.model.GroupeaseUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.lang.invoke.MethodHandles;
+import java.math.BigInteger;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
@@ -31,11 +34,47 @@ public class GroupJoinRequestDao
         this.entityManager = requireNonNull(entityManager);
     }
 
+
+
+
+    /**
+     * Creates a new {@link GroupJoinRequest} from the provided values and stores it in the database
+     * @param sender The {@link GroupeaseUser} that is sending the join request
+     * @param group The {@link Group} that the recipient is being invited to
+     *  @param comments Free text comments supplied by the user for the group members to read
+     * @return The newly created join request including assigned unique ID
+     */
+    @Transactional
+    public GroupJoinRequest create(GroupeaseUser sender, Group group, String comments) {
+
+
+        LOGGER.debug("GroupJoinRequestDao.create(sender={}, group={}, comments={}",
+                sender.getId(), group.getId(), comments);
+
+        GroupJoinRequest newJoinRequest = new GroupJoinRequest(sender, group, comments);
+
+        entityManager.persist(newJoinRequest);
+
+        return newJoinRequest;
+    }
+
+
+
+
+
+
+
+
     /**
      * Gets a list of all {@link GroupJoinRequest}s sent to a group
      * @param groupId The unique ID of the group to get requests for
      * @return The list of requests for the group. If there are none, the list will be empty
      */
+
+
+
+
+
     public List<GroupJoinRequest> list(long groupId)
     {
         LOGGER.debug("GroupJoinRequestDao.list({})", groupId);
