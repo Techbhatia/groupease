@@ -194,6 +194,7 @@ public class GroupJoinRequestService {
     }
 
     @POST
+    @Consumes(MediaType.APPLICATION_JSON)
     @Timed
     @Transactional
     public GroupJoinRequest create(@PathParam("channelId") long channelId, @PathParam("groupId") long groupId,@Nonnull CommentWrapper wrapper)
