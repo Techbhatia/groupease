@@ -1,12 +1,14 @@
 package io.github.groupease.model;
 
+<<<<<<< HEAD
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+=======
+>>>>>>> changes
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.time.Instant;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "GroupJoinRequest")
 public class GroupJoinRequest {

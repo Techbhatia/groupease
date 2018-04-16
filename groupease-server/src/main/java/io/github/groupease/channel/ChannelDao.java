@@ -20,7 +20,7 @@ public interface ChannelDao {
     /**
      * Fetch all {@link Channel} instances that the Member is a part of.
      *
-     * @return the list of all {@link Channel} instances containing userId as a member.
+     * @return the list of all {@link Channel} instances containing memberId.
      */
     @Nonnull
     List<Channel> list(

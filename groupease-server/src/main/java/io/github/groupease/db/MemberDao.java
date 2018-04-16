@@ -7,10 +7,15 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 
+<<<<<<< HEAD
 import com.codahale.metrics.annotation.Timed;
+=======
+import static java.util.Objects.requireNonNull;
+
+>>>>>>> changes
 import com.google.inject.persist.Transactional;
 import io.github.groupease.channelmember.ChannelMemberNotFoundException;
 import io.github.groupease.model.Channel;
@@ -45,7 +50,6 @@ public class MemberDao {
      * @param channel The channel the user is joining
      * @return The newly created member object
      */
-    @Timed
     @Transactional
     public Member create(@Nonnull GroupeaseUser userProfile, @Nonnull Channel channel)
     {
@@ -61,6 +65,7 @@ public class MemberDao {
     }
 
     /**
+<<<<<<< HEAD
      * Creates a new {@link Member} in a channel
      * @param userId The unique ID of the user in the database being added to the channel
      * @param channelId The unique ID of the channel in the database
@@ -87,8 +92,11 @@ public class MemberDao {
      * Deletes a {@link Member} from the database which prevents a user from using the associated channel further.
      *
      * @param member The previously retrieved member object.
+=======
+     * Deletes a {@link Member} from the database which prevents a user from using the associated channel further
+     * @param member The previously retrieved member object. Do not supply a manually constructed member
+>>>>>>> changes
      */
-    @Timed
     @Transactional
     public void delete(
             @Nonnull Member member
@@ -104,9 +112,13 @@ public class MemberDao {
      * @param channelId The ID of the channel
      * @return The matching member or null if none could be found
      */
+<<<<<<< HEAD
     @Nullable
     @Timed
     public Member getForUser(long userId, long channelId)
+=======
+    public Member getById(long userId, long channelId)
+>>>>>>> changes
     {
         LOGGER.debug("MemberDao.getForUser(userId={}, channelId={})", userId, channelId);
 
@@ -122,6 +134,7 @@ public class MemberDao {
         }
         return result.get(0);
     }
+<<<<<<< HEAD
 
     @Nonnull
     @Timed
@@ -175,4 +188,6 @@ public class MemberDao {
         return member;
     }
 
+=======
+>>>>>>> changes
 }

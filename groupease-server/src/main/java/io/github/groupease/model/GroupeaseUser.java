@@ -1,17 +1,14 @@
 package io.github.groupease.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.github.groupease.user.GroupeaseUserDto;
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.Instant;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name="GroupeaseUser")
 public class GroupeaseUser
@@ -20,13 +17,13 @@ public class GroupeaseUser
     private Long id;
     private String providerUserId;
     private String name;
-    private String nickname;
+    private String nickName;
     private String email;
     private String pictureUrl;
 
     @UpdateTimestamp
     @Column(name = "lastUpdatedOn")
-    private Instant lastUpdatedOn;
+    private Instant lastUpdate;
 
     @OneToMany(mappedBy = "userProfile")
     private List<Member> memberList;
@@ -42,7 +39,7 @@ public class GroupeaseUser
     {
         providerUserId = authZeroUser.getProviderUserId();
         name = authZeroUser.getName();
-        nickname = authZeroUser.getNickname();
+        nickName = authZeroUser.getNickname();
         email = authZeroUser.getEmail();
         pictureUrl = authZeroUser.getPictureUrl();
     }
@@ -52,12 +49,6 @@ public class GroupeaseUser
     public boolean equals(Object obj)
     {
         return EqualsBuilder.reflectionEquals(this, obj);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return HashCodeBuilder.reflectionHashCode(this);
     }
 
     // Accessors
@@ -91,8 +82,8 @@ public class GroupeaseUser
      * Gets the user's preferred nickname
      * @return The user's nickname
      */
-    public String getNickname() {
-        return nickname;
+    public String getNickName() {
+        return nickName;
     }
 
     /**
@@ -115,8 +106,8 @@ public class GroupeaseUser
      * Gets the time the persisted version of this object was last modified
      * @return The last update time
      */
-    public Instant getLastUpdatedOn() {
-        return lastUpdatedOn;
+    public Instant getLastUpdate() {
+        return lastUpdate;
     }
 
     /**

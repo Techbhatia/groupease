@@ -1,15 +1,11 @@
 package io.github.groupease.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.UpdateTimestamp;
-
 import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Table(name="GroupInvitation")
 public class GroupInvitation {
     @Id
@@ -22,11 +18,11 @@ public class GroupInvitation {
 
     @ManyToOne
     @JoinColumn(name = "SenderID", referencedColumnName = "ID")
-    private Member sender;
+    private GroupeaseUser sender;
 
     @ManyToOne
     @JoinColumn(name = "RecipientID", referencedColumnName = "ID")
-    private Member recipient;
+    private GroupeaseUser recipient;
 
     private String comments;
 
@@ -35,7 +31,7 @@ public class GroupInvitation {
 
     public GroupInvitation() {}
 
-    public GroupInvitation(Member sender, Member recipient, Group group)
+    public GroupInvitation(GroupeaseUser sender, GroupeaseUser recipient, Group group)
     {
         this.sender = sender;
         this.recipient = recipient;
@@ -46,11 +42,6 @@ public class GroupInvitation {
     public boolean equals(Object obj)
     {
         return EqualsBuilder.reflectionEquals(this, obj);
-    }
-
-    @Override
-    public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
     }
 
     /**
@@ -76,7 +67,7 @@ public class GroupInvitation {
      * @return The user that sent the invitation
      */
     public GroupeaseUser getSender() {
-        return sender != null ? sender.getGroupeaseUser() : null;
+        return sender;
     }
 
     /**
@@ -84,7 +75,7 @@ public class GroupInvitation {
      * @return The user that is being invited to the group
      */
     public GroupeaseUser getRecipient() {
-        return recipient != null ? recipient.getGroupeaseUser() : null;
+        return recipient;
     }
 
     /**

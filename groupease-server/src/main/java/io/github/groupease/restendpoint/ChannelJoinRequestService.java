@@ -34,7 +34,7 @@ public class ChannelJoinRequestService
     private final Provider<String> currentUserIdProvider;
 
     @Inject
-    public ChannelJoinRequestService(@Nonnull ChannelJoinRequestDao requestDao,
+    public ChannelJoinRequestService(@Nonnull ChannelJoinRequestDao requestDao, 
                                      @Nonnull MemberDao memberDao, @Nonnull GroupeaseUserDao userDao,
                                      @Nonnull @CurrentUserId Provider<String> currentUserIdProvider)
     {
@@ -126,7 +126,7 @@ public class ChannelJoinRequestService
     @Transactional
     public ChannelJoinRequest create(@PathParam("channelId") long channelId, @Nonnull CommentWrapper wrapper)
     {
-        LOGGER.debug("ChannelJoinRequestService.create(channel={}, comments={})", channelId, wrapper.comments);
+        LOGGER.trace("ChannelJoinRequestService.create(channel={}, comments={})", channelId, wrapper.comments);
 
         GroupeaseUser profile = userDao.getByProviderId(currentUserIdProvider.get());
         if(profile == null)

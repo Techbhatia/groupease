@@ -10,10 +10,6 @@ import javax.inject.Inject;
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
-import io.github.groupease.db.MemberDao;
-import io.github.groupease.model.Member;
-import io.github.groupease.user.GroupeaseUser;
-import io.github.groupease.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,8 +24,6 @@ public class DefaultChannelService implements ChannelService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private final ChannelDao channelDao;
-    private final MemberDao memberDao;
-    private final UserService userService;
 
     /**
      * Injectable constructor.
@@ -38,13 +32,9 @@ public class DefaultChannelService implements ChannelService {
      */
     @Inject
     public DefaultChannelService(
-            @Nonnull ChannelDao channelDao,
-            @Nonnull MemberDao memberDao,
-            @Nonnull UserService userService
+            @Nonnull ChannelDao channelDao
     ) {
         this.channelDao = requireNonNull(channelDao);
-        this.memberDao = requireNonNull(memberDao);
-        this.userService = requireNonNull(userService);
     }
 
     @Nonnull
@@ -85,12 +75,12 @@ public class DefaultChannelService implements ChannelService {
         LOGGER.debug("DefaultChannelService.update({}) called.", toUpdate);
 
         requireNonNull(toUpdate);
-        requireNonNull(toUpdate.getId());
 
         if (Strings.isNullOrEmpty(toUpdate.getName())) {
             throw new ChannelNameMissingException("Channel name is required.");
         }
 
+<<<<<<< HEAD
         /* Confirm current user is owner of channel. */
 
         /* Get current user. */
@@ -105,6 +95,10 @@ public class DefaultChannelService implements ChannelService {
         if (member == null || !member.isOwner()) {
             throw new ChannelEditByNonOwnerException();
         }
+=======
+        /* Confirm toUpdate exists and current user has access. */
+        channelDao.getById(toUpdate.getId());
+>>>>>>> changes
 
         return channelDao.update(toUpdate);
     }
@@ -128,21 +122,7 @@ public class DefaultChannelService implements ChannelService {
             throw new ChannelNameMissingException("Channel name is required.");
         }
 
-        /* Create channel. */
-        Channel newChannel = channelDao.create(toCreate);
-
-        /* Get current user. */
-        GroupeaseUser currentUser = getCurrentUser();
-
-        /* Add current user as channel member and owner. */
-        memberDao.create(
-                currentUser.getId(),
-                newChannel.getId(),
-                true
-        );
-
-        /* Return the new channel. */
-        return newChannel;
+        return channelDao.create(toCreate);
     }
 
     @Override
@@ -153,8 +133,10 @@ public class DefaultChannelService implements ChannelService {
     ) {
         LOGGER.debug("DefaultChannelService.delete({}) called.", id);
 
-        /* Confirm current user is owner of channel. */
+        /* Confirm channel to delete exists and current user has access. */
+        channelDao.getById(id);
 
+<<<<<<< HEAD
         /* Get current user. */
         GroupeaseUser currentUser = getCurrentUser();
 
@@ -169,12 +151,9 @@ public class DefaultChannelService implements ChannelService {
         }
 
         /* Delete channel. */
+=======
+>>>>>>> changes
         channelDao.delete(id);
-    }
-
-    private GroupeaseUser getCurrentUser() {
-        /* Get current user, ensuring saved in DB and refreshing from source. */
-        return userService.updateCurrentUser();
     }
 
 }

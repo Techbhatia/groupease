@@ -20,7 +20,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
-import java.util.Optional;
 
 @Path("users/{userId}/channels/{channelId}/group-invitations")
 @Produces(MediaType.APPLICATION_JSON)
@@ -131,9 +130,7 @@ public class GroupInvitationService {
 
         // Only a current group member can create an invitation
         loggedOnUser = userDao.getByProviderId(currentUserIdProvider.get());
-        Optional<Member> loggedOnMember = targetGroup.getMembers()
-                .stream().filter(member -> member.getGroupeaseUser().equals(loggedOnUser)).findFirst();
-        if(!loggedOnMember.isPresent())
+        if(targetGroup.getMembers().stream().noneMatch(member -> member.getGroupeaseUser().equals(loggedOnUser)))
         {
             throw new NotGroupMemberException("You must be a group member to send an invitation");
         }
@@ -146,9 +143,8 @@ public class GroupInvitationService {
         }
 
         // Verify the recipient is a member of the channel
-        Optional<Member> recipientMember = recipientUser.getMemberList()
-                .stream().filter(member -> member.getChannel().getId() == targetGroup.getChannelId()).findFirst();
-        if(!recipientMember.isPresent())
+        if(recipientUser.getMemberList()
+                .stream().noneMatch(member -> member.getChannel().getId() == targetGroup.getChannelId()))
         {
             throw new NotChannelMemberException(
                     "You cannot invite a user that is not a member of the channel that the group is formed in");
@@ -167,7 +163,7 @@ public class GroupInvitationService {
             throw new AlreadyMemberException("Cannot invite a user to a group the user is already a member of");
         }
 
-        return invitationDao.create(loggedOnMember.get(), recipientMember.get(), targetGroup);
+        return invitationDao.create(loggedOnUser, recipientUser, targetGroup);
     }
 
     /**

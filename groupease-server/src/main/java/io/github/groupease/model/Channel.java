@@ -1,10 +1,13 @@
 package io.github.groupease.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+<<<<<<< HEAD
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+=======
+>>>>>>> changes
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.annotation.Nonnull;
@@ -14,7 +17,6 @@ import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name="Channel")
 public class Channel

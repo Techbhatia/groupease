@@ -1,10 +1,8 @@
 package io.github.groupease.model;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.time.Instant;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name="ChannelInvitation")
 public class ChannelInvitation {
